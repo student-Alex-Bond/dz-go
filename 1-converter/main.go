@@ -16,7 +16,7 @@ func main() {
 }
 
 func calculationCurrency(sumOfMoney int, sourceCurrency, targetCurtency string) float64 {
-	return
+	return 0 
 }
 
 func getUserInput() string {
