@@ -15,7 +15,7 @@ func main() {
 
 }
 
-func calculationCurrency(sumOfMoney int, sourceCurrency, targetCurtency string) float64 {
+func calculationCurrency(sumOfMoney float64, sourceCurrency, targetCurtency string) float64 {
 	return 0 
 }
 
