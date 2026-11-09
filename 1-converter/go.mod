@@ -1,3 +1,3 @@
-module basics-go/dz
+module dz/converter
 
 go 1.27.3
