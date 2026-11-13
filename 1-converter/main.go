@@ -33,8 +33,8 @@ func main() {
 	}
 
 	fmt.Println("Исходная валюта", currentCurrency)
-	fmt.Println("Целевая валюта", targetCurrency)
 	fmt.Println("Сумма валюты", currencyAmount)
+	fmt.Println("Целевая валюта", targetCurrency)
 	fmt.Printf("%s => %s = %.2f %s\n", currentCurrency, targetCurrency, result, targetCurrency)
 }
 
@@ -52,7 +52,7 @@ func getUserInputCurrentCurrency() string {
 }
 func getUserInputTargetCurrency(currentCurrency string) string {
 	var targetCurrency string
-	
+
 	for {
 		switch currentCurrency {
 		case "USD":
@@ -90,8 +90,8 @@ func getUserInputCurrencyAmount() float64 {
 		fmt.Println("Введите сумму валюты")
 		fmt.Scan(&currencyAmount)
 		countCurrency, err := strconv.ParseFloat(currencyAmount, 64)
-		if err != nil {
-			fmt.Println("Не число, попробуйте ещё раз")
+		if err != nil && countCurrency <= 0 {
+			fmt.Println("Не число или число меньше нуля, попробуйте ещё раз")
 			continue
 		}
 		return countCurrency
