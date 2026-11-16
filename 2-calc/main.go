@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
+	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -11,22 +13,22 @@ import (
 func main() {
 	for {
 
-		var valueOfUser string
+		valueOfUser := bufio.NewScanner(os.Stdin)
 		arrNumbers := []float64{}
 		result := 0.0
 
-		typeOperationUser, err := getTypeOperation()
+		typeOperationUser, err := getTypeOperation(valueOfUser)
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
-		valueOfUser, err = getValueOfUser()
+		lineOfNumbers, err := getValueOfUser(valueOfUser)
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
 
-		arrNumbers, err = convertStrToSlice(valueOfUser)
+		arrNumbers, err = convertStrToSlice(lineOfNumbers)
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -73,36 +75,28 @@ func convertStrToSlice(values string) ([]float64, error) {
 		}
 		nums = append(nums, num)
 	}
+	if len(nums) == 0 {
+		return nil, errors.New("Empty line of numbers")
+	}
 	return nums, nil
 
 }
 
-func getValueOfUser() (string, error) {
-	var values string
+func getValueOfUser(scan *bufio.Scanner) (string, error) {
 	fmt.Println("Enter the numbers separated by commas without space")
-	n, err := fmt.Scan(&values)
-	if err != nil {
-		var dump string
-		fmt.Scanln(&dump)
-		return values, errors.New("invalid input")
+	if !scan.Scan() {
+		return "", errors.New("input break")
 	}
-	if n != 1 {
-		return values, errors.New("empty input")
-	}
-	return values, nil
+	return scan.Text(), nil
 
 }
 
-func getTypeOperation() (string, error) {
-	var typeOperaion string
+func getTypeOperation(scan *bufio.Scanner) (string, error) {
 	fmt.Println("Enter type operation (AVG, SUM, MED)")
-	_, err := fmt.Scan(&typeOperaion)
-	if err != nil {
-		var dump string
-		fmt.Scanln(&dump)
-		return "", errors.New("invalid input")
+	if !scan.Scan() {
+		return "", errors.New("ввод прерван")
 	}
-	typeOperaionToUpper := strings.ToUpper(typeOperaion)
+	typeOperaionToUpper := strings.ToUpper(scan.Text())
 
 	if typeOperaionToUpper == "AVG" || typeOperaionToUpper == "SUM" || typeOperaionToUpper == "MED" {
 		return typeOperaionToUpper, nil
