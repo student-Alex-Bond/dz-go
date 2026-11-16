@@ -11,6 +11,12 @@ var rates = map[string]map[string]float64{
 	"RUB": {"USD": 1 / 92.5, "EUR": 1 / 100.5},
 }
 
+var targets = map[string][]string{
+	"USD": {"EUR", "RUB"},
+	"EUR": {"USD", "RUB"},
+	"RUB": {"EUR", "USD"},
+}
+
 func main() {
 	currentCurrency := getUserInputCurrentCurrency()
 	currencyAmount := getUserInputCurrencyAmount()
@@ -48,46 +54,30 @@ func getUserInputCurrentCurrency() string {
 	}
 }
 func getUserInputTargetCurrency(currentCurrency string) string {
+	hint := strings.Join(targets[currentCurrency], ", ") // "EUR, RUB"
+
 	var targetCurrency string
-
 	for {
-		switch currentCurrency {
-		case "USD":
-			fmt.Println("Введите целевую валюту ( EUR, RUB)")
-			fmt.Scan(&targetCurrency)
-			targetCurrencyToUpper := strings.ToUpper(targetCurrency)
-			fmt.Println(targetCurrencyToUpper)
-			if targetCurrencyToUpper == "EUR" || targetCurrencyToUpper == "RUB" {
-				return targetCurrencyToUpper
-			}
-			fmt.Println("Выберите из имеющихся  EUR, RUB")
-		case "EUR":
-			fmt.Println("Введите целевую валюту ( USD, RUB)")
-			fmt.Scan(&targetCurrency)
-			targetCurrencyToUpper := strings.ToUpper(targetCurrency)
-			if targetCurrencyToUpper == "USD" || targetCurrencyToUpper == "RUB" {
-				return targetCurrencyToUpper
-			}
-			fmt.Println("Выберите из имеющихся  USD, RUB")
-		case "RUB":
-			fmt.Println("Введите целевую валюту ( EUR, USD)")
-			fmt.Scan(&targetCurrency)
-			targetCurrencyToUpper := strings.ToUpper(targetCurrency)
-			if targetCurrencyToUpper == "EUR" || targetCurrencyToUpper == "USD" {
-				return targetCurrencyToUpper
-			}
-			fmt.Println("Выберите из имеющихся  EUR, USD")
-		}
+		fmt.Printf("Введите целевую валюту (%s)\n", hint)
+		fmt.Scan(&targetCurrency)
+		targetCurrency = strings.ToUpper(targetCurrency)
 
+		for _, allowed := range targets[currentCurrency] {
+			if targetCurrency == allowed {
+				return targetCurrency
+			}
+		}
+		fmt.Println("Выберите из имеющихся:", hint)
 	}
 }
+
 func getUserInputCurrencyAmount() float64 {
 	var currencyAmount string
 	for {
 		fmt.Println("Введите сумму валюты")
 		fmt.Scan(&currencyAmount)
 		countCurrency, err := strconv.ParseFloat(currencyAmount, 64)
-		if err != nil && countCurrency <= 0 {
+		if err != nil || countCurrency <= 0 {
 			fmt.Println("Не число или число меньше нуля, попробуйте ещё раз")
 			continue
 		}
