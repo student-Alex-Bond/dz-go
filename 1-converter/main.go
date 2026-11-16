@@ -5,30 +5,19 @@ import (
 	"strconv"
 	"strings"
 )
+var rates = map[string]map[string]float64{
+	"USD": {"EUR": 0.92, "RUB": 92.5},
+	"EUR": {"USD": 1 / 0.92, "RUB": 100.5},
+	"RUB": {"USD": 1 / 92.5, "EUR": 1 / 100.5},
+}
 
 func main() {
 	currentCurrency := getUserInputCurrentCurrency()
-	targetCurrency := getUserInputTargetCurrency(currentCurrency)
 	currencyAmount := getUserInputCurrencyAmount()
-	rateUSDtoEUR := 0.92
-	rateUSDtoRUB := 92.5
-	rateEURtoRUB := 100.5
-	result := 0.0
-	switch {
-	case currentCurrency == "USD" && targetCurrency == "EUR":
-		result = currencyAmount * rateUSDtoEUR
-	case currentCurrency == "USD" && targetCurrency == "RUB":
-		result = currencyAmount * rateUSDtoRUB
-	case currentCurrency == "EUR" && targetCurrency == "USD":
-		result = currencyAmount / rateUSDtoEUR
-	case currentCurrency == "EUR" && targetCurrency == "RUB":
-		result = currencyAmount * rateEURtoRUB
-	case currentCurrency == "RUB" && targetCurrency == "USD":
-		result = currencyAmount / rateUSDtoRUB
-	case currentCurrency == "RUB" && targetCurrency == "EUR":
-		result = currencyAmount / rateEURtoRUB
-	default:
-		fmt.Println("Неподдерживаемая пара валют")
+	targetCurrency := getUserInputTargetCurrency(currentCurrency)
+	result, err := convert(currencyAmount, currentCurrency, targetCurrency)
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
 
@@ -36,6 +25,14 @@ func main() {
 	fmt.Println("Сумма валюты", currencyAmount)
 	fmt.Println("Целевая валюта", targetCurrency)
 	fmt.Printf("%s => %s = %.2f %s\n", currentCurrency, targetCurrency, result, targetCurrency)
+}
+
+func convert(amount float64, from, to string) (float64, error) {
+	rate, ok := rates[from][to] // второй аргумент: есть ли пара
+	if !ok {
+		return 0, fmt.Errorf("неподдерживаемая пара валют %s -> %s", from, to)
+	}
+	return amount * rate, nil
 }
 
 func getUserInputCurrentCurrency() string {
