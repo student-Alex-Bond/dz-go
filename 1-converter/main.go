@@ -5,23 +5,26 @@ import (
 	"strconv"
 	"strings"
 )
-var rates = map[string]map[string]float64{
+
+
+type ratesMap = map[string]map[string]float64
+type targetsMap = map[string][]string
+func main() {
+	var targets = targetsMap{
+	"USD": {"EUR", "RUB"},
+	"EUR": {"USD", "RUB"},
+	"RUB": {"EUR", "USD"},
+}
+	var rates = ratesMap{
 	"USD": {"EUR": 0.92, "RUB": 92.5},
 	"EUR": {"USD": 1 / 0.92, "RUB": 100.5},
 	"RUB": {"USD": 1 / 92.5, "EUR": 1 / 100.5},
 }
 
-var targets = map[string][]string{
-	"USD": {"EUR", "RUB"},
-	"EUR": {"USD", "RUB"},
-	"RUB": {"EUR", "USD"},
-}
-
-func main() {
 	currentCurrency := getUserInputCurrentCurrency()
 	currencyAmount := getUserInputCurrencyAmount()
-	targetCurrency := getUserInputTargetCurrency(currentCurrency)
-	result, err := convert(currencyAmount, currentCurrency, targetCurrency)
+	targetCurrency := getUserInputTargetCurrency(currentCurrency, &targets)
+	result, err := convert(currencyAmount, currentCurrency, targetCurrency, &rates)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -33,8 +36,8 @@ func main() {
 	fmt.Printf("%s => %s = %.2f %s\n", currentCurrency, targetCurrency, result, targetCurrency)
 }
 
-func convert(amount float64, from, to string) (float64, error) {
-	rate, ok := rates[from][to] // второй аргумент: есть ли пара
+func convert(amount float64, from, to string, rates *ratesMap) (float64, error) {
+	rate, ok := (*rates)[from][to]
 	if !ok {
 		return 0, fmt.Errorf("неподдерживаемая пара валют %s -> %s", from, to)
 	}
@@ -53,8 +56,8 @@ func getUserInputCurrentCurrency() string {
 		fmt.Println("Выберите из имеющихся USD, EUR, RUB")
 	}
 }
-func getUserInputTargetCurrency(currentCurrency string) string {
-	hint := strings.Join(targets[currentCurrency], ", ") // "EUR, RUB"
+func getUserInputTargetCurrency(currentCurrency string, targets *targetsMap) string {
+	hint := strings.Join((*targets)[currentCurrency], ", ") // "EUR, RUB"
 
 	var targetCurrency string
 	for {
@@ -62,7 +65,7 @@ func getUserInputTargetCurrency(currentCurrency string) string {
 		fmt.Scan(&targetCurrency)
 		targetCurrency = strings.ToUpper(targetCurrency)
 
-		for _, allowed := range targets[currentCurrency] {
+		for _, allowed := range (*targets)[currentCurrency] {
 			if targetCurrency == allowed {
 				return targetCurrency
 			}
