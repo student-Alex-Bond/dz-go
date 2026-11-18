@@ -22,10 +22,10 @@ func NewBin(name string, private bool) (*Bin, error) {
 		return nil, errors.New("EMPTY NAME")
 	}
 	return &Bin{
-		id:        uuid.New().String(),
-		private:   private,
-		createdAt: time.Now().Local(),
-		name:      name,
+		Id:        uuid.New().String(),
+		Private:   private,
+		CreatedAt: time.Now().Local(),
+		Name:      name,
 	}, nil
 }
 
