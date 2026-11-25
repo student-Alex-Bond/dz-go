@@ -3,6 +3,7 @@ package bins
 import (
 	"errors"
 	"time"
+
 	"github.com/google/uuid"
 )
 
@@ -19,7 +20,7 @@ type BinList struct {
 
 func NewBin(name string, private bool) (*Bin, error) {
 	if name == "" {
-		return nil, errors.New("EMPTY NAME")
+		return nil, errors.New("ИМЕНИ НЕТ")
 	}
 	return &Bin{
 		Id:        uuid.New().String(),
