@@ -8,14 +8,14 @@ import (
 )
 
 type Bin struct {
-	Id        string
-	Private   bool
-	CreatedAt time.Time
-	Name      string
+	Id        string    `json:"id"`
+	Private   bool      `json:"private"`
+	CreatedAt time.Time `json:"crearedAt"`
+	Name      string    `json:"name"`
 }
 
 type BinList struct {
-	Bins []Bin
+	Bins []Bin `json:"bins"`
 }
 
 func NewBin(name string, private bool) (*Bin, error) {

@@ -8,23 +8,23 @@ import (
 )
 
 type PathName struct {
-	pathName string
+	fileName string
 }
 
 func NewPathName(name string) *PathName {
 	return &PathName{
-		pathName: name,
+		fileName: name,
 	}
 }
 
-func (pn *PathName) ReadMyFile() ([]byte, error) {
-	data, err := os.ReadFile(pn.pathName)
+func (fl *PathName) ReadMyFile() ([]byte, error) {
+	data, err := os.ReadFile(fl.fileName)
 	if err != nil {
 		return nil, fmt.Errorf("Не могу прочитать файл: %w", err)
 	}
 	return data, nil
 }
 
-func (pn *PathName) IsJSONPath() bool {
-	return strings.EqualFold(filepath.Ext(strings.TrimSpace(pn.pathName)), ".json")
+func (fl *PathName) IsJSONPath() bool {
+	return strings.EqualFold(filepath.Ext(strings.TrimSpace(fl.fileName)), ".json")
 }
