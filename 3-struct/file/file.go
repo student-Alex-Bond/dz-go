@@ -7,14 +7,24 @@ import (
 	"strings"
 )
 
-func ReadMyFile(path string) ([]byte, error) {
-	data, err := os.ReadFile(path)
+type PathName struct {
+	pathName string
+}
+
+func NewPathName(name string) *PathName {
+	return &PathName{
+		pathName: name,
+	}
+}
+
+func (pn *PathName) ReadMyFile() ([]byte, error) {
+	data, err := os.ReadFile(pn.pathName)
 	if err != nil {
 		return nil, fmt.Errorf("Не могу прочитать файл: %w", err)
 	}
 	return data, nil
 }
 
-func IsJSONPath(path string) bool {
-	return strings.EqualFold(filepath.Ext(strings.TrimSpace(path)), ".json")
+func (pn *PathName) IsJSONPath() bool {
+	return strings.EqualFold(filepath.Ext(strings.TrimSpace(pn.pathName)), ".json")
 }
